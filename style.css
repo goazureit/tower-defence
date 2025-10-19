@@ -1,89 +1,84 @@
-body {
-    margin: 0; padding: 0;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    font-family: Arial, sans-serif;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh; touch-action: none;
+/* 🆕 MOBILE FIRST! FULLSCREEN PERFECTION! */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+    font-family: Arial, sans-serif; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow: hidden; /* 🆕 NO SCROLL! */
+    touch-action: manipulation; /* 🆕 FAST TOUCH! */
+    height: 100vh; /* 🆕 FULL HEIGHT! */
 }
 
-/* 🆕 TUTORIAL (Subtle overlay) */
-#tutorial {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8); display: flex; flex-direction: column;
-    justify-content: center; align-items: center; z-index: 1000;
+#startScreen, #mapScreen, #gameUI { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 20px; /* 🆕 MOBILE PADDING! */
 }
-#tutorialText { color: white; font-size: 22px; text-align: center; margin: 20px; max-width: 300px; }
-#nextStep { padding: 12px 24px; font-size: 16px; border-radius: 20px; }
 
-/* ORIGINAL SCREENS */
-#startScreen, #mapScreen { text-align: center; color: white; background: rgba(0,0,0,0.8);
-    padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-
-#startScreen h1 { font-size: 2.5em; margin: 0 0 30px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-#mapScreen h2 { font-size: 2em; margin: 0 0 30px 0; }
-
-button { background: linear-gradient(45deg, #ffd700, #ffed4e); border: none;
-    padding: 15px 30px; margin: 10px; font-size: 18px; border-radius: 25px; cursor: pointer;
-    color: #1a1a2e; font-weight: bold; transition: transform 0.2s; }
-
-button:hover, button:active { transform: scale(1.05); }
-button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-#gameUI { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 480px; }
-
-#gameCanvas { border: 2px solid #16213e; background: #0f3460; width: 400px; height: 500px; }
-
-#towerSelector { display: flex; justify-content: space-around; width: 100%; padding: 10px;
-    background: rgba(0,0,0,0.8); border-top: 2px solid #16213e; }
-
-.towerBtn { 
-    border: none; padding: 15px 10px; font-size: 14px; border-radius: 10px; cursor: pointer;
-    color: white; font-weight: bold; transition: all 0.2s; min-width: 65px; text-align: center;
+#gameCanvas { 
+    border: 3px solid #333; 
+    border-radius: 15px; /* 🆕 ROUNDED! */
+    max-width: 100vw; max-height: 70vh; /* 🆕 FITS PHONE! */
+    background: #000;
+    touch-action: none; /* 🆕 PRECISE TOUCH! */
 }
-.towerBtn:hover { transform: scale(1.05); }
-.towerBtn.selected { box-shadow: 0 0 15px rgba(255,255,255,0.5); }
-.towerBtn:disabled { opacity: 0.5; cursor: not-allowed; }
-.towerBtn small { font-size: 9px; display: block; margin-top: 2px; opacity: 0.8; }
 
-.basic { background: linear-gradient(gold, orange); }
-.fast { background: linear-gradient(blue, lightblue); }
-.aoe { background: linear-gradient(purple, magenta); }
-.snare { background: linear-gradient(green, darkgreen); } /* 🆕 SNARE GREEN! */
-.poison { background: linear-gradient(purple, indigo); } /* 🆕 POISON! */
-.sniper { background: linear-gradient(black, gray); color: white; } /* 🆕 SNIPER! */
+.towerBtn, .mapBtn {
+    width: 65px; height: 65px; /* 🆕 HUGE! FAT FINGERS! */
+    margin: 8px; border: none; border-radius: 50%; /* 🆕 CIRCLE BUTTONS! */
+    font-size: 10px; font-weight: bold; color: white;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    line-height: 1; /* 🆕 TIGHT TEXT! */
+}
+.towerBtn small { font-size: 8px; margin-top: 1px; opacity: 0.9; } /* 🆕 TINY BUT READABLE! */
 
-/* MAP BUTTONS (unchanged) */
-#mapSelector { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 10px; }
-.mapBtn { padding: 20px; font-size: 16px; border-radius: 15px; min-width: 100px; 
-    color: white; font-weight: bold; transition: all 0.2s; }
-.mapBtn:hover { transform: scale(1.05); }
-.mapBtn.selected { box-shadow: 0 0 20px rgba(255,255,255,0.8); }
+.basic { background: gold; } .fast { background: blue; } .snare { background: green; }
+.poison { background: purple; } .aoe { background: magenta; } .sniper { background: black; color: white; }
 
-.forest { background: linear-gradient(#4CAF50, #2E7D32); }
-.desert { background: linear-gradient(#FF9800, #F57C00); }
-.mountain { background: linear-gradient(#607D8B, #455A64); }
+.mapBtn { width: 80px; height: 80px; background: #444; color: white; margin: 10px; }
+.mapBtn.selected, .towerBtn.selected { transform: scale(1.1); box-shadow: 0 0 15px rgba(255,255,0,0.8); }
 
-#backToStart { background: #666; color: white; padding: 10px 20px; margin-top: 20px; }
+button { 
+    background: #4CAF50; color: white; border: none; 
+    padding: 15px 25px; /* 🆕 BIG BUTTONS! */
+    border-radius: 25px; font-size: 16px; /* 🆕 MOBILE FONT! */
+    margin: 10px; cursor: pointer; min-width: 120px; /* 🆕 NO TINY BUTTONS! */
+}
+button:hover { background: #45a049; }
+button:disabled { background: #666; }
 
-/* UPGRADE PANEL (slightly bigger) */
+#towerSelector { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 15px 0; }
+#mapSelector { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 15px 0; }
+
 #upgradePanel {
-    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-    background: rgba(0,0,0,0.9); color: white; padding: 20px;
-    border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    text-align: center; min-width: 200px;
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.95); color: white; padding: 25px; /* 🆕 BIGGER! */
+    border-radius: 20px; min-width: 280px; /* 🆕 PHONE WIDTH! */
+    z-index: 1000; display: none;
 }
+.upgradeBtn { width: 100%; margin: 8px 0; padding: 15px; font-size: 18px; } /* 🆕 HUGE! */
 
-#upgradeButtons { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 10px 0; }
-.upgradeBtn { padding: 8px 12px; font-size: 12px; border-radius: 8px; margin: 2px; }
-.upgrade1 { background: linear-gradient(#4CAF50, #45a049); }
-.upgrade2 { background: linear-gradient(#2196F3, #0b7dda); }
-.upgrade3 { background: linear-gradient(#FF9800, #e68900); }
-.upgradeBtn:disabled { opacity: 0.5; }
+#tutorial {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center;
+    z-index: 2000; flex-direction: column;
+}
+#tutorialText { color: white; font-size: 22px; text-align: center; margin-bottom: 25px; max-width: 90vw; }
+#nextStep { padding: 18px 35px; font-size: 18px; }
 
-#closeUpgrade { background: #666; color: white; padding: 10px 20px; margin-top: 10px; }
+#gameUI { padding-bottom: 20px; } /* 🆕 SPACE FOR BUTTONS! */
+#header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; padding: 0 15px; }
+#backToStart { position: absolute; top: 15px; left: 15px; padding: 10px 15px; font-size: 14px; }
 
 @media (max-width: 480px) {
-    #gameCanvas { width: 100vw; height: 70vh; }
-    .towerBtn { font-size: 12px; padding: 12px 8px; }
-    #upgradePanel { width: 90vw; bottom: 100px; }
+    .towerBtn { width: 70px; height: 70px; } /* 🆕 EVEN BIGGER! */
+    .towerBtn small { font-size: 7px; } /* 🆕 PERFECT SIZE! */
+    #upgradePanel { padding: 20px; min-width: 95vw; margin: 0 5px; }
+    button { padding: 18px 30px; font-size: 18px; } /* 🆕 THUMB FRIENDLY! */
+}
+
+/* 🆕 iOS SAFARI FIX! */
+@supports (-webkit-touch-callout: none) {
+    body { padding-bottom: env(safe-area-inset-bottom); }
+    #gameUI { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
 }

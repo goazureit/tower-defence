@@ -358,8 +358,40 @@ canvas.addEventListener('mousemove', (e) => {
 canvas.addEventListener('contextmenu', (e) => { e.preventDefault(); ghostTower = null; });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') ghostTower = null; });
 
+// 🆕 PERFECT MOBILE TOUCH!
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    mouseX = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    mouseY = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    
+    // 🆕 SINGLE TAP = PLACE OR UPGRADE!
+    selectedTowerObj = game.towers.find(t => Math.hypot(t.x - mouseX, t.y - mouseY) < t.size * 1.5);
+    if (selectedTowerObj) { 
+        showUpgradePanel(selectedTowerObj); 
+        if (tutorialStep === 2) nextTutorial(); 
+        ghostTower = null;
+    } else if (ghostTower) {
+        const config = towerTypes[selectedTower][0];
+        if (game.money >= config.cost && !isOnPath(mouseX, mouseY)) {
+            game.towers.push(new Tower(mouseX, mouseY, selectedTower)); 
+            game.money -= config.cost; 
+            saveGame();
+            ctx.fillStyle = 'rgba(255,215,0,0.2)'; 
+            ctx.beginPath(); ctx.arc(mouseX, mouseY, 50, 0, Math.PI*2); ctx.fill();
+            if (tutorialStep === 1) nextTutorial();
+        }
+        ghostTower = null; // 🆕 CANCEL AFTER PLACE!
+    }
+}, { passive: false });
+
+// 🆕 DOUBLE TAP = CANCEL GHOST!
+let lastTap = 0;
 canvas.addEventListener('touchend', (e) => {
-    if (e.touches.length === 0) setTimeout(() => { ghostTower = null; }, 300);
+    const now = Date.now();
+    if (now - lastTap < 300) { ghostTower = null; } // 🆕 DOUBLE TAP CANCEL!
+    lastTap = now;
 });
 
 canvas.addEventListener('click', (e) => {
