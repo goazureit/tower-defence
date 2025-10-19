@@ -3,18 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tower Defence</title>
+    <title>Tower Defense</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 🆕 TUTORIAL OVERLAY -->
+    <div id="tutorial" style="display:none;">
+        <div id="tutorialText"></div>
+        <button id="nextStep">Got it!</button>
+    </div>
+
     <!-- START SCREEN -->
     <div id="startScreen">
-        <h1>🏰 TOWER DEFENCE</h1>
+        <h1>🏰 TOWER DEFENSE</h1>
         <button id="newGame">New Game</button>
         <button id="loadGame">Load Game</button>
     </div>
 
-    <!-- 🆕 MAP SELECTION -->
+    <!-- MAP SELECTION -->
     <div id="mapScreen" style="display:none;">
         <h2>🗺️ Choose Map</h2>
         <div id="mapSelector">
@@ -28,13 +34,32 @@
     <!-- GAME UI -->
     <div id="gameUI" style="display:none;">
         <canvas id="gameCanvas"></canvas>
-        <div id="towerSelector">
-            <button class="towerBtn basic" data-type="basic">Basic<br>$50</button>
-            <button class="towerBtn fast" data-type="fast">Fast<br>$40</button>
-            <button class="mapBtn aoe" data-type="aoe">AoE<br>$80</button>
-        </div>
+        
+        <!-- 🆕 ORIGINAL CLEAN SHOP (just bigger click area) -->
+    <div id="towerSelector">
+        <button class="towerBtn basic selected" data-type="basic">
+            Basic<br>$50<br><small>25dmg</small>
+        </button>
+        <button class="towerBtn fast" data-type="fast">
+            Fast<br>$40<br><small>Freeze + 10dmg</small>
+        </button>
+        <button class="towerBtn snare" data-type="snare">
+            Snare<br>$60<br><small>Slow + 20dmg</small>
+        </button>
+        <button class="towerBtn poison" data-type="poison">
+            Poison<br>$70<br><small>Melt 5s + 15dmg</small>
+        </button>
+        <button class="towerBtn aoe" data-type="aoe">
+            AoE<br>$80<br><small>Chain 3 + 40dmg</small>
+        </button>
+        <button class="towerBtn sniper" data-type="sniper">
+            Sniper<br>$90<br><small>Crit x2 + 80dmg</small>
+        </button>
+    </div>
+        
+        <!-- UPGRADE PANEL -->
         <div id="upgradePanel" style="display:none;">
-            <h3>Upgrade Tower</h3>
+            <h3>⚙️ Upgrade Tower</h3>
             <div id="upgradeButtons"></div>
             <button id="closeUpgrade">Close</button>
         </div>
