@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower Defense</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- START SCREEN -->
+    <div id="startScreen">
+        <h1>🏰 TOWER DEFENSE</h1>
+        <button id="newGame">New Game</button>
+        <button id="loadGame">Load Game</button>
+    </div>
+
+    <!-- 🆕 MAP SELECTION -->
+    <div id="mapScreen" style="display:none;">
+        <h2>🗺️ Choose Map</h2>
+        <div id="mapSelector">
+            <button class="mapBtn" data-map="forest">🌲 Forest<br>Easy</button>
+            <button class="mapBtn" data-map="desert">🏜️ Desert<br>Medium</button>
+            <button class="mapBtn" data-map="mountain">⛰️ Mountain<br>Hard</button>
+        </div>
+        <button id="backToStart">← Back</button>
+    </div>
+    
+    <!-- GAME UI -->
+    <div id="gameUI" style="display:none;">
+        <canvas id="gameCanvas"></canvas>
+        <div id="towerSelector">
+            <button class="towerBtn basic" data-type="basic">Basic<br>$50</button>
+            <button class="towerBtn fast" data-type="fast">Fast<br>$40</button>
+            <button class="mapBtn aoe" data-type="aoe">AoE<br>$80</button>
+        </div>
+        <div id="upgradePanel" style="display:none;">
+            <h3>Upgrade Tower</h3>
+            <div id="upgradeButtons"></div>
+            <button id="closeUpgrade">Close</button>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
