@@ -1,153 +1,108 @@
-/* 🆕 TRUE iOS NATIVE! */
+/* 🆕 COMPACT iOS! 80% GAME SPACE! */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { 
-    font-family: -apple-system, SF Pro Display, SF Pro Text, system-ui, sans-serif; /* 🆕 EXACT iOS! */
-    background: #f2f2f7; /* 🆕 iOS SYSTEM GRAY! */
+    font-family: -apple-system, SF Pro Display, SF Pro Text, system-ui, sans-serif;
+    background: #f2f2f7;
     overflow: hidden; height: 100vh;
     touch-action: manipulation;
-    -webkit-font-smoothing: antialiased; /* 🆕 CRISP TEXT! */
-    -webkit-tap-highlight-color: transparent; /* 🆕 NO HIGHLIGHTS! */
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
 }
 
 #startScreen, #mapScreen, #gameUI { 
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
     display: flex; flex-direction: column; justify-content: center; align-items: center;
-    padding: 20px;
+    padding: 15px; /* 🆕 TIGHTER! */
 }
 
-/* 🆕 iOS CANVAS! */
+/* 🆕 HUGE CANVAS! */
 #gameCanvas { 
-    border-radius: 16px; /* 🆕 iOS CORNER RADIUS! */
-    max-width: 100vw; max-height: 70vh;
+    border-radius: 16px;
+    max-width: 100vw; max-height: 80vh; /* 🆕 80% SCREEN! */
     background: #000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* 🆕 iOS SHADOW! */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     touch-action: none;
 }
 
-/* 🆕 EXACT iOS TOWER BUTTONS! */
+/* 🆕 COMPACT iOS BUTTONS! */
 .towerBtn {
-    width: 80px; height: 80px; /* 🆕 iOS BUTTON SIZE! */
-    margin: 8px; 
-    border-radius: 16px; /* 🆕 iOS ROUNDED! */
+    width: 56px; height: 56px; /* 🆕 56px = iOS ICON SIZE! */
+    margin: 4px; /* 🆕 TIGHT! */
+    border-radius: 12px; /* 🆕 SMALL ROUND! */
     border: none;
-    font-weight: 600; /* 🆕 iOS BOLD! */
+    font-weight: 600;
     cursor: pointer; 
-    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 🆕 iOS EASE! */
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.2); /* 🆕 iOS BORDER! */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.2);
 }
 
-/* 🆕 iOS COLORS + HIGHLIGHTS! */
-.basic { 
-    background: linear-gradient(145deg, #ffeb3b, #fbc02d); 
-    color: #333; 
-}
-.fast { 
-    background: linear-gradient(145deg, #2196f3, #1976d2); 
-    color: white; 
-}
-.snare { 
-    background: linear-gradient(145deg, #4caf50, #388e3c); 
-    color: white; 
-}
-.poison { 
-    background: linear-gradient(145deg, #9c27b0, #7b1fa2); 
-    color: white; 
-}
-.aoe { 
-    background: linear-gradient(145deg, #e91e63, #c2185b); 
-    color: white; 
-}
-.sniper { 
-    background: linear-gradient(145deg, #212121, #424242); 
-    color: white; 
-}
+.basic { background: linear-gradient(145deg, #ffeb3b, #fbc02d); color: #333; }
+.fast { background: linear-gradient(145deg, #2196f3, #1976d2); color: white; }
+.snare { background: linear-gradient(145deg, #4caf50, #388e3c); color: white; }
+.poison { background: linear-gradient(145deg, #9c27b0, #7b1fa2); color: white; }
+.aoe { background: linear-gradient(145deg, #e91e63, #c2185b); color: white; }
+.sniper { background: linear-gradient(145deg, #212121, #424242); color: white; }
 
 .towerBtn small { 
-    font-size: 11px; margin-top: 2px; font-weight: 400; opacity: 0.9; 
+    font-size: 8px; margin-top: 1px; font-weight: 400; opacity: 0.9; /* 🆕 TINY TEXT! */
 }
 
-.towerBtn:active, .towerBtn.selected { 
-    transform: scale(0.95); /* 🆕 iOS PRESS! */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25); /* 🆕 iOS SELECT! */
-}
+.towerBtn:active, .towerBtn.selected { transform: scale(0.95); box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
 
-/* 🆕 iOS MAP BUTTONS! */
+/* 🆕 COMPACT MAP BUTTONS! */
 .mapBtn {
-    width: 120px; height: 120px; 
-    background: white; border-radius: 16px; margin: 8px; 
-    font-size: 13px; font-weight: 600; color: #333;
+    width: 88px; height: 88px; /* 🆕 SMALLER! */
+    background: white; border-radius: 12px; margin: 6px; 
+    font-size: 11px; font-weight: 600; color: #333;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-.mapBtn.selected { 
-    background: #007aff; /* 🆕 iOS BLUE! */ 
-    color: white; 
-    transform: scale(1.02);
-}
+.mapBtn.selected { background: #007aff; color: white; transform: scale(1.02); }
 
-/* 🆕 iOS BUTTONS! */
+/* 🆕 COMPACT BUTTONS! */
 button { 
-    background: #007aff; /* 🆕 iOS BLUE! */
-    color: white; border: none; border-radius: 12px; /* 🆕 iOS ROUND! */
-    padding: 16px 32px; font-size: 17px; font-weight: 600; /* 🆕 iOS TEXT! */
-    margin: 8px; min-width: 160px; cursor: pointer;
+    background: #007aff; color: white; border: none; border-radius: 10px;
+    padding: 12px 24px; font-size: 16px; font-weight: 600; /* 🆕 SMALLER! */
+    margin: 6px; min-width: 120px; /* 🆕 COMPACT! */
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 button:active { transform: scale(0.98); }
 button:disabled { background: #c7c7cc; color: #86868b; }
 
-#towerSelector { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 20px 0; }
-#mapSelector { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 20px 0; }
+#towerSelector { 
+    display: flex; flex-wrap: wrap; justify-content: center; 
+    gap: 4px; /* 🆕 TINY GAP! */ 
+    margin: 12px 0; /* 🆕 TIGHT! */
+}
+#mapSelector { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 12px 0; }
 
 #upgradePanel {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: white; border-radius: 20px; /* 🆕 iOS SHEET! */
-    min-width: 320px; max-width: 90vw; padding: 0; /* 🆕 NO PADDING! */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* 🆕 iOS SHADOW! */
+    background: white; border-radius: 16px;
+    min-width: 280px; max-width: 90vw; padding: 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     z-index: 1000; display: none;
     overflow: hidden;
 }
-#upgradePanel > div { padding: 24px; } /* 🆕 INNER PADDING! */
+#upgradePanel > div { padding: 20px; }
 .upgradeBtn { 
-    width: 100%; margin: 8px 0; padding: 16px; 
-    background: #007aff; border-radius: 12px; 
-    font-size: 17px; font-weight: 600; color: white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    width: 100%; margin: 6px 0; padding: 14px; 
+    background: #007aff; border-radius: 10px; 
+    font-size: 16px; font-weight: 600; color: white;
 }
 
-#tutorial {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-    background: rgba(0,0,0,0.4); /* 🆕 iOS BLUR! */
-    backdrop-filter: blur(10px); /* 🆕 iOS EFFECT! */
-    display: none; justify-content: center; align-items: center;
-    z-index: 2000; flex-direction: column;
-}
-#tutorial > div { 
-    background: white; border-radius: 20px; padding: 32px; 
-    text-align: center; max-width: 90vw; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-#tutorialText { font-size: 20px; font-weight: 600; margin-bottom: 24px; color: #1d1d1f; }
-#nextStep { padding: 16px 32px; font-size: 17px; font-weight: 600; }
+#tutorial > div { background: white; border-radius: 16px; padding: 24px; max-width: 90vw; }
+#tutorialText { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #1d1d1f; }
+#nextStep { padding: 14px 28px; font-size: 16px; font-weight: 600; }
 
-#header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin: 15px 0; padding: 0 15px; }
-#backToStart { 
-    padding: 12px 20px; font-size: 15px; font-weight: 600; 
-    background: rgba(0,0,0,0.05); border-radius: 12px; color: #007aff;
-}
+#header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin: 10px 0; padding: 0 15px; }
+#backToStart { padding: 10px 16px; font-size: 14px; background: rgba(0,0,0,0.05); border-radius: 10px; color: #007aff; }
 
-/* 🆕 iOS MOBILE! */
+/* 🆕 MOBILE TIGHTER! */
 @media (max-width: 480px) {
-    .towerBtn { width: 84px; height: 84px; } /* 🆕 THUMB SIZE! */
-    button { padding: 18px 36px; font-size: 17px; }
-    #tutorialText { font-size: 22px; }
-}
-
-/* 🆕 iOS SAFARI! */
-@supports (-webkit-touch-callout: none) {
-    body { padding-bottom: env(safe-area-inset-bottom); }
-    #gameUI { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+    .towerBtn { width: 60px; height: 60px; } /* 🆕 PHONE PERFECT! */
+    .towerBtn small { font-size: 9px; }
+    button { padding: 14px 28px; font-size: 17px; }
+    #gameCanvas { max-height: 82vh; } /* 🆕 EVEN BIGGER! */
+    #towerSelector { gap: 2px; margin: 8px 0; }
 }
