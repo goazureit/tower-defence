@@ -1,80 +1,112 @@
-/* 🆕 MOBILE FIRST! FULLSCREEN PERFECTION! */
+/* 🆕 SLEEK PROFESSIONAL MOBILE! */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { 
-    font-family: Arial, sans-serif; 
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    overflow: hidden; /* 🆕 NO SCROLL! */
-    touch-action: manipulation; /* 🆕 FAST TOUCH! */
-    height: 100vh; /* 🆕 FULL HEIGHT! */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; /* 🆕 NATIVE FONT! */
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); /* 🆕 SUBTLE GRADIENT! */
+    overflow: hidden; height: 100vh;
+    touch-action: manipulation;
 }
 
 #startScreen, #mapScreen, #gameUI { 
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
     display: flex; flex-direction: column; justify-content: center; align-items: center;
-    padding: 20px; /* 🆕 MOBILE PADDING! */
+    padding: 20px;
 }
 
+/* 🆕 SLEEK CANVAS! */
 #gameCanvas { 
-    border: 3px solid #333; 
-    border-radius: 15px; /* 🆕 ROUNDED! */
-    max-width: 100vw; max-height: 70vh; /* 🆕 FITS PHONE! */
+    border: 1px solid #e1e5e9; 
+    border-radius: 12px; /* 🆕 SUBTLE ROUND! */
+    max-width: 100vw; max-height: 70vh;
     background: #000;
-    touch-action: none; /* 🆕 PRECISE TOUCH! */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1); /* 🆕 ELEGANT SHADOW! */
+    touch-action: none;
 }
 
-.towerBtn, .mapBtn {
-    width: 65px; height: 65px; /* 🆕 HUGE! FAT FINGERS! */
-    margin: 8px; border: none; border-radius: 50%; /* 🆕 CIRCLE BUTTONS! */
-    font-size: 10px; font-weight: bold; color: white;
-    cursor: pointer; transition: all 0.2s;
+/* 🆕 PROFESSIONAL TOWER BUTTONS! */
+.towerBtn {
+    width: 72px; height: 72px; /* 🆕 PERFECT TOUCH SIZE! */
+    margin: 6px; border: none; border-radius: 12px; /* 🆕 ROUNDED RECT! */
+    font-size: 11px; font-weight: 600; color: white;
+    cursor: pointer; transition: all 0.2s ease;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    line-height: 1; /* 🆕 TIGHT TEXT! */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15); /* 🆕 SUBTLE SHADOW! */
+    position: relative; overflow: hidden;
 }
-.towerBtn small { font-size: 8px; margin-top: 1px; opacity: 0.9; } /* 🆕 TINY BUT READABLE! */
+.towerBtn::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: inherit; opacity: 0.1; /* 🆕 GLASS EFFECT! */
+}
+.towerBtn small { font-size: 9px; margin-top: 2px; font-weight: 500; opacity: 0.95; }
 
-.basic { background: gold; } .fast { background: blue; } .snare { background: green; }
-.poison { background: purple; } .aoe { background: magenta; } .sniper { background: black; color: white; }
+.basic { background: linear-gradient(135deg, #ffd700, #ffed4e); color: #333; }
+.fast { background: linear-gradient(135deg, #2196f3, #21cbf3); }
+.snare { background: linear-gradient(135deg, #4caf50, #8bc34a); }
+.poison { background: linear-gradient(135deg, #9c27b0, #e1bee7); }
+.aoe { background: linear-gradient(135deg, #e91e63, #f06292); }
+.sniper { background: linear-gradient(135deg, #212121, #424242); }
 
-.mapBtn { width: 80px; height: 80px; background: #444; color: white; margin: 10px; }
-.mapBtn.selected, .towerBtn.selected { transform: scale(1.1); box-shadow: 0 0 15px rgba(255,255,0,0.8); }
+.towerBtn:hover, .towerBtn.selected { 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2); /* 🆕 ELEVATE! */
+}
 
+/* 🆕 CLEAN MAP BUTTONS! */
+.mapBtn {
+    width: 100px; height: 100px; background: white; 
+    border-radius: 16px; margin: 8px; font-size: 12px; font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.2s;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.mapBtn.selected { background: #667eea; color: white; transform: scale(1.05); }
+
+/* 🆕 PROFESSIONAL BUTTONS! */
 button { 
-    background: #4CAF50; color: white; border: none; 
-    padding: 15px 25px; /* 🆕 BIG BUTTONS! */
-    border-radius: 25px; font-size: 16px; /* 🆕 MOBILE FONT! */
-    margin: 10px; cursor: pointer; min-width: 120px; /* 🆕 NO TINY BUTTONS! */
+    background: linear-gradient(135deg, #667eea, #764ba2); 
+    color: white; border: none; 
+    padding: 14px 28px; border-radius: 25px; 
+    font-size: 16px; font-weight: 600; /* 🆕 BOLD! */
+    margin: 8px; min-width: 140px; cursor: pointer; 
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); /* 🆕 GRADIENT SHADOW! */
+    transition: all 0.2s ease;
 }
-button:hover { background: #45a049; }
-button:disabled { background: #666; }
+button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5); }
+button:disabled { background: #ccc; box-shadow: none; transform: none; }
 
-#towerSelector { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 15px 0; }
-#mapSelector { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 15px 0; }
+#towerSelector { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 20px 0; }
+#mapSelector { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 20px 0; }
 
 #upgradePanel {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.95); color: white; padding: 25px; /* 🆕 BIGGER! */
-    border-radius: 20px; min-width: 280px; /* 🆕 PHONE WIDTH! */
+    background: white; color: #333; padding: 30px; border-radius: 20px;
+    min-width: 300px; max-width: 90vw; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     z-index: 1000; display: none;
 }
-.upgradeBtn { width: 100%; margin: 8px 0; padding: 15px; font-size: 18px; } /* 🆕 HUGE! */
+.upgradeBtn { 
+    width: 100%; margin: 10px 0; padding: 16px; 
+    background: linear-gradient(135deg, #667eea, #764ba2); 
+    border-radius: 12px; font-size: 16px; font-weight: 600; 
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
 
 #tutorial {
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-    background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center;
+    background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center;
     z-index: 2000; flex-direction: column;
 }
-#tutorialText { color: white; font-size: 22px; text-align: center; margin-bottom: 25px; max-width: 90vw; }
-#nextStep { padding: 18px 35px; font-size: 18px; }
+#tutorialText { color: white; font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 25px; max-width: 90vw; }
+#nextStep { padding: 16px 32px; font-size: 16px; font-weight: 600; }
 
-#gameUI { padding-bottom: 20px; } /* 🆕 SPACE FOR BUTTONS! */
-#header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; padding: 0 15px; }
-#backToStart { position: absolute; top: 15px; left: 15px; padding: 10px 15px; font-size: 14px; }
+#header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin: 15px 0; padding: 0 15px; }
+#backToStart { padding: 10px 20px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.2); border-radius: 20px; }
 
+/* 🆕 MOBILE OPTIMIZATION! */
 @media (max-width: 480px) {
-    .towerBtn { width: 70px; height: 70px; } /* 🆕 EVEN BIGGER! */
-    .towerBtn small { font-size: 7px; } /* 🆕 PERFECT SIZE! */
-    #upgradePanel { padding: 20px; min-width: 95vw; margin: 0 5px; }
-    button { padding: 18px 30px; font-size: 18px; } /* 🆕 THUMB FRIENDLY! */
+    .towerBtn { width: 76px; height: 76px; } /* 🆕 SLIGHTLY BIGGER! */
+    .towerBtn small { font-size: 10px; }
+    #upgradePanel { padding: 25px; margin: 10px; }
+    button { padding: 16px 32px; font-size: 17px; } /* 🆕 iOS SIZE! */
+    #tutorialText { font-size: 22px; }
 }
 
 /* 🆕 iOS SAFARI FIX! */
