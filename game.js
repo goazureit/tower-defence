@@ -14,10 +14,10 @@ const backToStart = document.getElementById('backToStart');
 let mouseX = 0, mouseY = 0;
 let ghostTower = null;
 let gameLoopRunning = false;
-let placementPreview = false; // 🆕 Track preview state for tower placement
-let lastTouchTime = 0; // 🆕 For debouncing touch events
-let placementMessage = ''; // 🆕 For invalid placement feedback
-let messageTimer = 0; // 🆕 Timer for message display
+let placementPreview = false;
+let lastTouchTime = 0;
+let placementMessage = '';
+let messageTimer = 0;
 
 class Projectile {
     constructor(x, y, targetX, targetY, damage, color, speed = 5, ability = 'none', isCrit = false, level = 0) {
@@ -90,7 +90,7 @@ const towerTypes = {
         4:{cost:450,color:'hotpink',damage:200,range:180,cooldown:35,size:30,label:'OP',bullet:'pink',ability:'explode'}
     },
     sniper: {
-        0:{cost:90,color:'black',damage:80,range:150,cooldown:120,size:18,label:'I',bullet:'white',ability:'sniper'},
+        0:{cost:90,color:'black',distance:150,cooldown:120,size:18,label:'I',bullet:'white',ability:'sniper'},
         1:{cost:130,color:'gray',damage:120,range:170,cooldown:100,size:20,label:'II',bullet:'silver',ability:'sniper'},
         2:{cost:200,color:'darkgray',damage:180,range:190,cooldown:80,size:22,label:'III',bullet:'gray',ability:'sniper'},
         3:{cost:320,color:'black',damage:300,range:220,cooldown:60,size:25,label:'MAX',bullet:'white',ability:'sniper'},
@@ -121,16 +121,16 @@ const enemyTypes = {
 };
 
 const maps = {
-    forest: { bgColor: '#4CAF50', pathColor: '#2E7D32', path: [{x:0,y:300},{x:120,y:300},{x:120,y:100},{x:280,y:100},{x:280,y:400},{x:400,y:400}], difficulty: 1 },
-    desert: { bgColor: '#FFECB3', pathColor: '#F57C00', path: [{x:0,y:200},{x:100,y:200},{x:100,y:450},{x:200,y:450},{x:200,y:150},{x:300,y:150},{x:300,y:350},{x:400,y:350}], difficulty: 1.5 },
-    mountain: { bgColor: '#CFD8DC', pathColor: '#455A64', path: [{x:0,y:150},{x:80,y:150},{x:80,y:350},{x:180,y:350},{x:180,y:100},{x:280,y:100},{x:280,y:300},{x:400,y:300}], difficulty: 2 }
+    forest: { bgColor: '#4CAF50', pathColor: '#2E7D32', path: [{x:0,y:0.6},{x:0.3,y:0.6},{x:0.3,y:0.2},{x:0.7,y:0.2},{x:0.7,y:0.8},{x:1,y:0.8}], difficulty: 1 }, // 🆕 Normalized path coordinates
+    desert: { bgColor: '#FFECB3', pathColor: '#F57C00', path: [{x:0,y:0.4},{x:0.25,y:0.4},{x:0.25,y:0.9},{x:0.5,y:0.9},{x:0.5,y:0.3},{x:0.75,y:0.3},{x:0.75,y:0.7},{x:1,y:0.7}], difficulty: 1.5 },
+    mountain: { bgColor: '#CFD8DC', pathColor: '#455A64', path: [{x:0,y:0.3},{x:0.2,y:0.3},{x:0.2,y:0.7},{x:0.45,y:0.7},{x:0.45,y:0.2},{x:0.7,y:0.2},{x:0.7,y:0.6},{x:1,y:0.6}], difficulty: 2 }
 };
 
 let currentMap = 'forest', selectedTower = 'basic', selectedTowerObj = null, PATH = [];
 let tutorialStep = 0;
 
 const tutorialSteps = [
-    { text: "1. Tap a tower type below", target: '.towerBtn' }, // 🆕 Updated text for mobile
+    { text: "1. Tap a tower type below", target: '.towerBtn' },
     { text: "2. Tap to preview, tap again to place", target: '#gameCanvas' },
     { text: "3. Tap your tower to upgrade it!", target: '.towerBtn' }
 ];
@@ -148,10 +148,10 @@ function updateTutorial() {
 function nextTutorial() { tutorialStep++; updateTutorial(); }
 
 function resizeCanvas() {
-    const maxWidth = Math.min(window.innerWidth * 0.9, 480); // 🆕 90% of viewport
+    const maxWidth = Math.min(window.innerWidth * 0.9, 480);
     const maxHeight = Math.min(window.innerHeight * 0.9, 600);
     canvas.width = maxWidth; canvas.height = maxHeight;
-    PATH = maps[currentMap].path.map(p => ({x: (p.x / 400) * canvas.width, y: (p.y / 500) * canvas.height}));
+    PATH = maps[currentMap].path.map(p => ({x: p.x * canvas.width, y: p.y * canvas.height})); // 🆕 Use normalized coordinates
 }
 resizeCanvas(); window.addEventListener('resize', resizeCanvas);
 
@@ -166,7 +166,7 @@ towerBtns.forEach(btn => btn.addEventListener('click', () => {
     towerBtns.forEach(b => b.classList.remove('selected')); 
     btn.classList.add('selected');
     ghostTower = { x: mouseX, y: mouseY, type: selectedTower, level: 0 };
-    placementPreview = false; // 🆕 Reset preview
+    placementPreview = false;
 }));
 
 closeUpgrade.addEventListener('click', () => { upgradePanel.style.display = 'none'; placementPreview = false; });
@@ -274,7 +274,7 @@ function drawGhostTower(x, y) {
     const config = towerTypes[ghostTower.type][0];
     const canPlace = game.money >= config.cost && !isOnPath(x, y);
     
-    ctx.globalAlpha = placementPreview ? 0.8 : 0.6; // 🆕 Brighter during preview
+    ctx.globalAlpha = placementPreview ? 0.8 : 0.6;
     ctx.fillStyle = canPlace ? config.color : 'red';
     ctx.beginPath(); ctx.arc(x, y, config.size, 0, Math.PI*2); ctx.fill();
     
@@ -286,7 +286,7 @@ function drawGhostTower(x, y) {
     ctx.font = '12px Arial'; ctx.fillText(config.label, x-5, y+4);
     ctx.globalAlpha = 1;
     
-    if (placementPreview && canPlace) { // 🆕 Pulsing effect for preview
+    if (placementPreview && canPlace) {
         ctx.globalAlpha = 0.3 + Math.sin(Date.now() / 200) * 0.2;
         ctx.fillStyle = config.color;
         ctx.beginPath(); ctx.arc(x, y, config.size + 5, 0, Math.PI*2); ctx.fill();
@@ -305,8 +305,13 @@ class Tower {
     update() {
         if (this.cooldown > 0) this.cooldown--;
         if (this.cooldown === 0) {
-            const targets = game.enemies.filter(e => Math.hypot(e.x - this.x, e.y - this.y) < this.range);
+            const targets = game.enemies.filter(e => {
+                const dist = Math.hypot(e.x - this.x, e.y - this.y);
+                // console.log(`Tower(${this.type}, x:${this.x}, y:${this.y}, range:${this.range}) checking enemy(x:${e.x}, y:${e.y}), dist:${dist}`); // 🆕 Debug
+                return dist <= this.range;
+            });
             if (targets.length > 0) {
+                // console.log(`Tower(${this.type}) found ${targets.length} targets`); // 🆕 Debug
                 if (this.ability === 'explode') {
                     let explosionTargets = [targets[0]];
                     const maxTargets = this.level === 4 ? 5 : 3;
@@ -330,7 +335,7 @@ class Tower {
                     for (let i = 0; i < maxHits - 1; i++) {
                         const next = game.enemies.find(e => 
                             e !== current && 
-                            Math.hypot(e.x - this.x, e.y - this.y) < this.range &&
+                            Math.hypot(e.x - this.x, e.y - this.y) <= this.range &&
                             Math.abs(Math.atan2(e.y - this.y, e.x - this.x) - Math.atan2(target.y - this.y, target.x - this.x)) < 0.1
                         );
                         if (next) hitEnemies.push(next);
@@ -360,7 +365,7 @@ class Tower {
         ctx.strokeStyle = config.color + '30'; ctx.lineWidth = 1;
         ctx.beginPath(); ctx.arc(this.x, this.y, this.range, 0, Math.PI*2); ctx.stroke();
         ctx.fillStyle = 'white'; ctx.font = '12px Arial'; ctx.fillText(config.label, this.x-5, this.y+4);
-        if (selectedTowerObj === this) { // 🆕 Highlight selected tower
+        if (selectedTowerObj === this) {
             ctx.globalAlpha = 0.5;
             ctx.fillStyle = 'yellow';
             ctx.beginPath(); ctx.arc(this.x, this.y, this.size + 5, 0, Math.PI*2); ctx.fill();
@@ -416,7 +421,7 @@ class Enemy {
 
 function spawnWave() {
     const diff = getDifficulty();
-    const enemyCount = Math.min(Math.floor(game.wave * 2 * diff.multiplier), 30); // 🆕 Cap enemies to prevent lag
+    const enemyCount = Math.min(Math.floor(game.wave * 2 * diff.multiplier), 30);
     const types = diff.enemyTypes;
     for (let i = 0; i < enemyCount; i++) {
         const type = types[Math.floor(Math.random() * types.length)];
@@ -440,7 +445,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { ghostTow
 canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
     const now = Date.now();
-    if (now - lastTouchTime < 300) return; // 🆕 Debounce touch events
+    if (now - lastTouchTime < 300) return;
     lastTouchTime = now;
     
     const rect = canvas.getBoundingClientRect();
@@ -448,7 +453,7 @@ canvas.addEventListener('touchstart', (e) => {
     mouseX = (touch.clientX - rect.left) * (canvas.width / rect.width);
     mouseY = (touch.clientY - rect.top) * (canvas.height / rect.height);
     
-    selectedTowerObj = game.towers.find(t => Math.hypot(t.x - mouseX, t.y - mouseY) < t.size * 2); // 🆕 Larger hitbox
+    selectedTowerObj = game.towers.find(t => Math.hypot(t.x - mouseX, t.y - mouseY) < t.size * 2);
     if (selectedTowerObj) { 
         showUpgradePanel(selectedTowerObj); 
         if (tutorialStep === 2) nextTutorial(); 
@@ -466,11 +471,11 @@ canvas.addEventListener('touchstart', (e) => {
                 ghostTower = null; placementPreview = false;
             } else {
                 placementMessage = !isOnPath(mouseX, mouseY) ? 'Not enough money!' : 'Cannot place on path!';
-                messageTimer = Date.now() + 2000; // 🆕 Show message for 2s
+                messageTimer = Date.now() + 2000;
                 ghostTower = null; placementPreview = false;
             }
         } else {
-            placementPreview = true; // 🆕 Enter preview mode
+            placementPreview = true;
             ghostTower.x = mouseX; ghostTower.y = mouseY;
         }
     }
@@ -488,7 +493,7 @@ canvas.addEventListener('click', (e) => {
     const x = (e.clientX - rect.left) * (canvas.width / rect.width);
     const y = (e.clientY - rect.top) * (canvas.height / rect.height);
     
-    selectedTowerObj = game.towers.find(t => Math.hypot(t.x - x, t.y - y) < t.size * 2); // 🆕 Larger hitbox
+    selectedTowerObj = game.towers.find(t => Math.hypot(t.x - x, t.y - y) < t.size * 2);
     if (selectedTowerObj) { 
         showUpgradePanel(selectedTowerObj); 
         if (tutorialStep === 2) nextTutorial(); 
@@ -518,7 +523,7 @@ function gameLoop() {
     
     drawGhostTower(mouseX, mouseY);
     
-    game.projectiles = game.projectiles.filter(p => p.update()).slice(0, 50); // 🆕 Cap projectiles at 50
+    game.projectiles = game.projectiles.filter(p => p.update()).slice(0, 100); // 🆕 Increased cap to 100
     
     game.enemies = game.enemies.filter(e => e.update());
     game.towers.forEach(t => t.update());
@@ -531,7 +536,7 @@ function gameLoop() {
     ctx.fillText(`$${game.money}`, 10, 55);
     ctx.fillText(`Lives: ${game.lives}`, canvas.width - 90, 30);
     
-    if (messageTimer > Date.now()) { // 🆕 Draw placement error message
+    if (messageTimer > Date.now()) {
         ctx.fillStyle = 'red'; ctx.font = '16px Arial';
         ctx.fillText(placementMessage, canvas.width / 2 - 50, canvas.height - 30);
     }
