@@ -1,9 +1,9 @@
-// 🆕 FIXED: GHOST SPAWNS INSTANTLY!
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const startScreen = document.getElementById('startScreen');
 const mapScreen = document.getElementById('mapScreen');
 const gameUI = document.getElementById('gameUI');
+const gameOverScreen = document.getElementById('gameOverScreen'); // 🆕 Game Over Screen
 const towerBtns = document.querySelectorAll('.towerBtn');
 const mapBtns = document.querySelectorAll('.mapBtn');
 const upgradePanel = document.getElementById('upgradePanel');
@@ -13,6 +13,7 @@ const backToStart = document.getElementById('backToStart');
 
 let mouseX = 0, mouseY = 0;
 let ghostTower = null;
+let gameLoopRunning = false; // 🆕 Track game loop state
 
 class Projectile {
     constructor(x, y, targetX, targetY, damage, color, speed = 5, ability = 'none', isCrit = false) {
@@ -37,7 +38,7 @@ const towerTypes = {
         0:{cost:50,color:'gold',damage:25,range:80,cooldown:60,size:20,label:'I',bullet:'yellow',ability:'none'},
         1:{cost:75,color:'orange',damage:40,range:90,cooldown:50,size:22,label:'II',bullet:'orange',ability:'none'},
         2:{cost:120,color:'red',damage:60,range:100,cooldown:40,size:25,label:'III',bullet:'red',ability:'none'},
-        3:{cost:200,color:'darkred',damage:100,range:120,cooldown:30,size:28,label:'MAX',bullet:'darkred',ability:'none'}
+        3:{cost:200,color:'darkred',damage:100,range:120,cooldown:30,size:28,label:'MAX',bullet:'darkred',ability:'/white'},
     },
     fast: {
         0:{cost:40,color:'blue',damage:10,range:60,cooldown:30,size:20,label:'I',bullet:'lightblue',ability:'freeze'},
@@ -68,21 +69,30 @@ const towerTypes = {
         1:{cost:130,color:'gray',damage:120,range:170,cooldown:100,size:20,label:'II',bullet:'silver',ability:'sniper'},
         2:{cost:200,color:'darkgray',damage:180,range:190,cooldown:80,size:22,label:'III',bullet:'gray',ability:'sniper'},
         3:{cost:320,color:'black',damage:300,range:220,cooldown:60,size:25,label:'MAX',bullet:'white',ability:'sniper'}
+    },
+    laser: { // 🆕 Laser Tower: Piercing beam
+        0:{cost:100,color:'cyan',damage:30,range:200,cooldown:100,size:20,label:'I',bullet:'cyan',ability:'laser'},
+        1:{cost:150,color:'lightcyan',damage:50,range:220,cooldown:85,size:22,label:'II',bullet:'lightcyan',ability:'laser'},
+        2:{cost:220,color:'deepskyblue',damage:80,range:240,cooldown:70,size:25,label:'III',bullet:'deepskyblue',ability:'laser'},
+        3:{cost:350,color:'darkcyan',damage:120,range:260,cooldown:55,size:28,label:'MAX',bullet:'darkcyan',ability:'laser'}
     }
 };
 
-const difficultyLevels = [
-    { wave: 1, name: 'Easy', multiplier: 1, enemyTypes: ['basic'] },
-    { wave: 5, name: 'Medium', multiplier: 1.5, enemyTypes: ['basic', 'fast'] },
-    { wave: 10, name: 'Hard', multiplier: 2, enemyTypes: ['basic', 'fast', 'tank'] },
-    { wave: 15, name: 'Nightmare', multiplier: 3, enemyTypes: ['basic', 'fast', 'tank'] },
-    { wave: 20, name: 'Insane', multiplier: 4, enemyTypes: ['basic', 'fast', 'tank'] }
+const difficultyLevels = [ // 🆕 Progressive difficulty every 10 waves
+    { wave: 1, name: 'Easy', multiplier: 1, enemyTypes: ['basic'], spawnRate: 800 },
+    { wave: 11, name: 'Medium', multiplier: 1.5, enemyTypes: ['basic', 'fast'], spawnRate: 700 },
+    { wave: 21, name: 'Hard', multiplier: 2, enemyTypes: ['basic', 'fast', 'tank'], spawnRate: 600 },
+    { wave: 31, name: 'Nightmare', multiplier: 3, enemyTypes: ['basic', 'fast', 'tank', 'stealth'], spawnRate: 500 },
+    { wave: 41, name: 'Insane', multiplier: 4, enemyTypes: ['basic', 'fast', 'tank', 'stealth'], spawnRate: 400 }
 ];
+
 const enemyTypes = {
     basic: { color: 'red', health: 50, speed: 1, size: 15, reward: 10 },
     fast: { color: 'orange', health: 30, speed: 2, size: 12, reward: 15 },
-    tank: { color: 'darkred', health: 150, speed: 0.5, size: 20, reward: 25 }
+    tank: { color: 'darkred', health: 150, speed: 0.5, size: 20, reward: 25 },
+    stealth: { color: 'purple', health: 80, speed: 1.5, size: 14, reward: 20 } // 🆕 Stealth enemy
 };
+
 const maps = {
     forest: { bgColor: '#4CAF50', pathColor: '#2E7D32', path: [{x:0,y:300},{x:120,y:300},{x:120,y:100},{x:280,y:100},{x:280,y:400},{x:400,y:400}], difficulty: 1 },
     desert: { bgColor: '#FFECB3', pathColor: '#F57C00', path: [{x:0,y:200},{x:100,y:200},{x:100,y:450},{x:200,y:450},{x:200,y:150},{x:300,y:150},{x:300,y:350},{x:400,y:350}], difficulty: 1.5 },
@@ -123,19 +133,17 @@ mapBtns.forEach(btn => btn.addEventListener('click', () => {
 }));
 backToStart.addEventListener('click', () => { mapScreen.style.display = 'none'; startScreen.style.display = 'block'; });
 
-// 🆕 FIXED: GHOST SPAWNS INSTANTLY ON SELECT!
 towerBtns.forEach(btn => btn.addEventListener('click', () => {
     selectedTower = btn.dataset.type; 
     towerBtns.forEach(b => b.classList.remove('selected')); 
     btn.classList.add('selected');
-    // 🆕 CREATE GHOST IMMEDIATELY!
     ghostTower = { x: mouseX, y: mouseY, type: selectedTower, level: 0 };
 }));
 
 closeUpgrade.addEventListener('click', () => upgradePanel.style.display = 'none');
 
 function getDifficulty() {
-    const level = difficultyLevels.find(l => game.wave <= l.wave) || difficultyLevels[4];
+    const level = difficultyLevels.find(l => game.wave <= l.wave) || difficultyLevels[difficultyLevels.length - 1];
     return { ...level, mapMultiplier: maps[currentMap].difficulty };
 }
 
@@ -181,16 +189,18 @@ function loadGame() {
 
 function startNewGame() {
     game = { enemies: [], towers: [], projectiles: [], wave: 1, money: 100, lives: 20 };
-    ghostTower = null; // 🆕 RESET GHOST!
+    ghostTower = null;
     startScreen.style.display = 'none'; mapScreen.style.display = 'block';
     mapBtns[0].classList.add('selected');
 }
 function startGame() {
     mapScreen.style.display = 'none'; gameUI.style.display = 'flex';
+    gameOverScreen.style.display = 'none'; // 🆕 Hide game over screen
     towerBtns[0].classList.add('selected');
-    ghostTower = { x: mouseX, y: mouseY, type: 'basic', level: 0 }; // 🆕 START WITH GHOST!
+    ghostTower = { x: mouseX, y: mouseY, type: 'basic', level: 0 };
     if (game.enemies.length === 0) spawnWave();
     if (!localStorage.getItem('tutorialDone')) showTutorial();
+    gameLoopRunning = true; // 🆕 Start game loop
     gameLoop();
 }
 
@@ -198,6 +208,12 @@ document.getElementById('newGame').addEventListener('click', startNewGame);
 document.getElementById('loadGame').addEventListener('click', () => {
     if (loadGame()) { startGame(); alert(`✅ Loaded ${currentMap.toUpperCase()}!`); }
     else { alert('No saved game!'); startNewGame(); }
+});
+document.getElementById('restartGame')?.addEventListener('click', () => { // 🆕 Restart button
+    gameLoopRunning = false;
+    startNewGame();
+    gameOverScreen.style.display = 'none';
+    mapScreen.style.display = 'block';
 });
 setInterval(saveGame, 10000);
 
@@ -268,6 +284,24 @@ class Tower {
                         t.health -= this.damage;
                         if (t.health <= 0) { game.enemies.splice(game.enemies.indexOf(t), 1); game.money += t.reward; }
                     });
+                } else if (this.ability === 'laser') { // 🆕 Laser ability: Hits up to 5 enemies in a line
+                    const target = targets[0];
+                    let hitEnemies = [target];
+                    let current = target;
+                    for (let i = 0; i < 4; i++) {
+                        const next = game.enemies.find(e => 
+                            e !== current && 
+                            Math.hypot(e.x - this.x, e.y - this.y) < this.range &&
+                            Math.abs(Math.atan2(e.y - this.y, e.x - this.x) - Math.atan2(target.y - this.y, target.x - this.x)) < 0.1
+                        );
+                        if (next) hitEnemies.push(next);
+                        current = next;
+                    }
+                    hitEnemies.forEach(e => {
+                        e.health -= this.damage;
+                        if (e.health <= 0) { game.enemies.splice(game.enemies.indexOf(e), 1); game.money += e.reward; }
+                    });
+                    game.projectiles.push(new Projectile(this.x, this.y, target.x, target.y, this.damage, this.bulletColor, 10));
                 } else {
                     const target = targets[0];
                     let finalDamage = this.damage;
@@ -341,7 +375,7 @@ function spawnWave() {
     const types = diff.enemyTypes;
     for (let i = 0; i < enemyCount; i++) {
         const type = types[Math.floor(Math.random() * types.length)];
-        setTimeout(() => game.enemies.push(new Enemy(type)), i * 800);
+        setTimeout(() => game.enemies.push(new Enemy(type)), i * diff.spawnRate); // 🆕 Dynamic spawn rate
     }
     game.lastWave = Date.now();
 }
@@ -358,7 +392,6 @@ canvas.addEventListener('mousemove', (e) => {
 canvas.addEventListener('contextmenu', (e) => { e.preventDefault(); ghostTower = null; });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') ghostTower = null; });
 
-// 🆕 PERFECT MOBILE TOUCH!
 canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
     const rect = canvas.getBoundingClientRect();
@@ -366,7 +399,6 @@ canvas.addEventListener('touchstart', (e) => {
     mouseX = (touch.clientX - rect.left) * (canvas.width / rect.width);
     mouseY = (touch.clientY - rect.top) * (canvas.height / rect.height);
     
-    // 🆕 SINGLE TAP = PLACE OR UPGRADE!
     selectedTowerObj = game.towers.find(t => Math.hypot(t.x - mouseX, t.y - mouseY) < t.size * 1.5);
     if (selectedTowerObj) { 
         showUpgradePanel(selectedTowerObj); 
@@ -382,15 +414,14 @@ canvas.addEventListener('touchstart', (e) => {
             ctx.beginPath(); ctx.arc(mouseX, mouseY, 50, 0, Math.PI*2); ctx.fill();
             if (tutorialStep === 1) nextTutorial();
         }
-        ghostTower = null; // 🆕 CANCEL AFTER PLACE!
+        ghostTower = null;
     }
 }, { passive: false });
 
-// 🆕 DOUBLE TAP = CANCEL GHOST!
 let lastTap = 0;
 canvas.addEventListener('touchend', (e) => {
     const now = Date.now();
-    if (now - lastTap < 300) { ghostTower = null; } // 🆕 DOUBLE TAP CANCEL!
+    if (now - lastTap < 300) { ghostTower = null; }
     lastTap = now;
 });
 
@@ -414,16 +445,18 @@ canvas.addEventListener('click', (e) => {
             ctx.beginPath(); ctx.arc(x, y, 50, 0, Math.PI*2); ctx.fill();
             if (tutorialStep === 1) nextTutorial();
         }
+        ghost只需
+
         ghostTower = null;
     }
 });
 
 function gameLoop() {
+    if (!gameLoopRunning) return; // 🆕 Stop loop on game over
     ctx.fillStyle = maps[currentMap].bgColor; ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = maps[currentMap].pathColor; ctx.lineWidth = 20;
     ctx.beginPath(); ctx.moveTo(PATH[0].x, PATH[0].y); for (let p of PATH) ctx.lineTo(p.x, p.y); ctx.stroke();
     
-    // 🆕 FIXED: DRAW GHOST!
     drawGhostTower(mouseX, mouseY);
     
     game.projectiles = game.projectiles.filter(p => {
@@ -431,12 +464,11 @@ function gameLoop() {
         const hit = game.enemies.find(e => Math.hypot(e.x - p.x, e.y - p.y) < e.size);
         if (hit) {
             if (p.ability === 'poison') {
-                hit.poisonDamage = p.damage * 0.4;
-                hit.poisonUntil = Date.now() + 5000;
-            } else if (p.ability === 'snare') { hit.slowUntil = Date.now() + 3000; }
-            else if (p.ability === 'freeze') { hit.frozenUntil = Date.now() + 2000; }
+                hit.poisonDamage = p.damage * 0.5; // 🆕 Stronger poison
+                hit.poisonUntil = Date.now() + 6000;
+            } else if (p.ability === 'snare') { hit.slowUntil = Date.now() + 4000; } // 🆕 Longer snare
+            else if (p.ability === 'freeze') { hit.frozenUntil = Date.now() + 2500; } // 🆕 Longer freeze
             else { hit.health -= p.damage; }
-            
             if (hit.health <= 0) {
                 game.enemies.splice(game.enemies.indexOf(hit), 1);
                 game.money += hit.reward;
@@ -457,10 +489,19 @@ function gameLoop() {
     ctx.fillText(`$${game.money}`, 10, 55);
     ctx.fillText(`Lives: ${game.lives}`, canvas.width - 90, 30);
     
+    if (game.lives <= 0) { // 🆕 Game over condition
+        gameLoopRunning = false;
+        gameUI.style.display = 'none';
+        gameOverScreen.style.display = 'flex';
+        document.getElementById('finalWave').innerText = `Reached Wave: ${game.wave}`;
+        saveGame();
+        return;
+    }
+    
     if (game.enemies.length === 0 && Date.now() > (game.lastWave || 0) + 5000) {
         game.wave++; spawnWave();
     }
-    saveGame(); requestAnimationFrame(gameLoop);
+    requestAnimationFrame(gameLoop);
 }
 
 game = { enemies: [], towers: [], projectiles: [], wave: 1, money: 100, lives: 20 };
