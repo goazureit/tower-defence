@@ -20,10 +20,11 @@ let placementMessage = '';
 let messageTimer = 0;
 
 class Projectile {
-    constructor(x, y, targetX, targetY, damage, color, speed = 5, ability = 'none', isCrit = false, level = 0) {
+    constructor(x, y, targetX, targetY, damage, color, speed = 5, ability = 'none', isCrit = false, level = 0, targetEnemy = null) { // 🆕 Added targetEnemy
         this.x = x; this.y = y; this.targetX = targetX; this.targetY = targetY;
         this.damage = damage; this.color = color; this.speed = speed; this.ability = ability; this.isCrit = isCrit;
         this.level = level; this.angle = Math.atan2(targetY - y, targetX - x); this.alpha = 1;
+        this.targetEnemy = targetEnemy; // 🆕 Reference to target enemy
     }
     update() {
         if (this.ability === 'laser') {
@@ -32,7 +33,19 @@ class Projectile {
         }
         this.x += Math.cos(this.angle) * this.speed;
         this.y += Math.sin(this.angle) * this.speed;
-        return Math.hypot(this.x - this.targetX, this.y - this.targetY) > 5;
+        const dist = Math.hypot(this.x - this.targetX, this.y - this.targetY);
+        if (dist <= 5 && this.ability === 'none' && this.targetEnemy) { // 🆕 Apply damage for standard projectiles
+            this.targetEnemy.health -= this.damage;
+            if (this.targetEnemy.health <= 0) {
+                const index = game.enemies.indexOf(this.targetEnemy);
+                if (index !== -1) {
+                    game.enemies.splice(index, 1);
+                    game.money += this.targetEnemy.reward;
+                }
+            }
+            return false; // Remove projectile after hitting
+        }
+        return dist > 5;
     }
     draw() {
         ctx.globalAlpha = this.ability === 'laser' ? this.alpha : 1;
@@ -45,11 +58,12 @@ class Projectile {
             ctx.stroke();
         } else {
             ctx.fillStyle = this.color;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.isCrit ? 5 : 3, 0, Math.PI*2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.isCrit ? 6 : 4, 0, Math.PI*2); ctx.fill(); // 🆕 Increased size
+            // 🆕 Trail effect for visibility
+            ctx.globalAlpha = 0.3;
+            ctx.beginPath(); ctx.arc(this.x - Math.cos(this.angle) * 5, this.y - Math.sin(this.angle) * 5, 3, 0, Math.PI*2); ctx.fill();
+            ctx.globalAlpha = 1;
         }
-        ctx.globalAlpha = 1;
     }
 }
 
@@ -90,7 +104,7 @@ const towerTypes = {
         4:{cost:450,color:'hotpink',damage:200,range:180,cooldown:35,size:30,label:'OP',bullet:'pink',ability:'explode'}
     },
     sniper: {
-        0:{cost:90,color:'black',distance:150,cooldown:120,size:18,label:'I',bullet:'white',ability:'sniper'},
+        0:{cost:90,color:'black',damage:80,range:150,cooldown:120,size:18,label:'I',bullet:'white',ability:'sniper'},
         1:{cost:130,color:'gray',damage:120,range:170,cooldown:100,size:20,label:'II',bullet:'silver',ability:'sniper'},
         2:{cost:200,color:'darkgray',damage:180,range:190,cooldown:80,size:22,label:'III',bullet:'gray',ability:'sniper'},
         3:{cost:320,color:'black',damage:300,range:220,cooldown:60,size:25,label:'MAX',bullet:'white',ability:'sniper'},
@@ -121,7 +135,7 @@ const enemyTypes = {
 };
 
 const maps = {
-    forest: { bgColor: '#4CAF50', pathColor: '#2E7D32', path: [{x:0,y:0.6},{x:0.3,y:0.6},{x:0.3,y:0.2},{x:0.7,y:0.2},{x:0.7,y:0.8},{x:1,y:0.8}], difficulty: 1 }, // 🆕 Normalized path coordinates
+    forest: { bgColor: '#4CAF50', pathColor: '#2E7D32', path: [{x:0,y:0.6},{x:0.3,y:0.6},{x:0.3,y:0.2},{x:0.7,y:0.2},{x:0.7,y:0.8},{x:1,y:0.8}], difficulty: 1 },
     desert: { bgColor: '#FFECB3', pathColor: '#F57C00', path: [{x:0,y:0.4},{x:0.25,y:0.4},{x:0.25,y:0.9},{x:0.5,y:0.9},{x:0.5,y:0.3},{x:0.75,y:0.3},{x:0.75,y:0.7},{x:1,y:0.7}], difficulty: 1.5 },
     mountain: { bgColor: '#CFD8DC', pathColor: '#455A64', path: [{x:0,y:0.3},{x:0.2,y:0.3},{x:0.2,y:0.7},{x:0.45,y:0.7},{x:0.45,y:0.2},{x:0.7,y:0.2},{x:0.7,y:0.6},{x:1,y:0.6}], difficulty: 2 }
 };
@@ -151,7 +165,7 @@ function resizeCanvas() {
     const maxWidth = Math.min(window.innerWidth * 0.9, 480);
     const maxHeight = Math.min(window.innerHeight * 0.9, 600);
     canvas.width = maxWidth; canvas.height = maxHeight;
-    PATH = maps[currentMap].path.map(p => ({x: p.x * canvas.width, y: p.y * canvas.height})); // 🆕 Use normalized coordinates
+    PATH = maps[currentMap].path.map(p => ({x: p.x * canvas.width, y: p.y * canvas.height}));
 }
 resizeCanvas(); window.addEventListener('resize', resizeCanvas);
 
@@ -307,11 +321,11 @@ class Tower {
         if (this.cooldown === 0) {
             const targets = game.enemies.filter(e => {
                 const dist = Math.hypot(e.x - this.x, e.y - this.y);
-                // console.log(`Tower(${this.type}, x:${this.x}, y:${this.y}, range:${this.range}) checking enemy(x:${e.x}, y:${e.y}), dist:${dist}`); // 🆕 Debug
+                console.log(`Tower(${this.type}, x:${this.x}, y:${this.y}, range:${this.range}) checking enemy(x:${e.x}, y:${e.y}), dist:${dist}`); // 🆕 Active debug
                 return dist <= this.range;
             });
             if (targets.length > 0) {
-                // console.log(`Tower(${this.type}) found ${targets.length} targets`); // 🆕 Debug
+                console.log(`Tower(${this.type}) firing at ${targets.length} target(s)`); // 🆕 Active debug
                 if (this.ability === 'explode') {
                     let explosionTargets = [targets[0]];
                     const maxTargets = this.level === 4 ? 5 : 3;
@@ -353,7 +367,7 @@ class Tower {
                     if (this.ability === 'sniper' && Math.random() < (this.level === 4 ? 0.75 : 0.5)) {
                         finalDamage *= 2; isCrit = true;
                     }
-                    game.projectiles.push(new Projectile(this.x, this.y, target.x, target.y, finalDamage, this.bulletColor, 7, this.ability, isCrit, this.level));
+                    game.projectiles.push(new Projectile(this.x, this.y, target.x, target.y, finalDamage, this.bulletColor, 7, this.ability, isCrit, this.level, target)); // 🆕 Pass target enemy
                 }
                 this.cooldown = this.cooldownMax;
             }
@@ -523,7 +537,7 @@ function gameLoop() {
     
     drawGhostTower(mouseX, mouseY);
     
-    game.projectiles = game.projectiles.filter(p => p.update()).slice(0, 100); // 🆕 Increased cap to 100
+    game.projectiles = game.projectiles.filter(p => p.update()).slice(0, 100);
     
     game.enemies = game.enemies.filter(e => e.update());
     game.towers.forEach(t => t.update());
