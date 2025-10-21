@@ -12,23 +12,24 @@ body {
 #startScreen, #mapScreen, #gameUI, #gameOverScreen { 
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
     display: flex; flex-direction: column; justify-content: center; align-items: center;
-    padding: 10px; /* Tighter padding for mobile */
+    padding: 8px; /* 🆕 Tighter padding */
 }
 
 #gameCanvas { 
     border-radius: 16px;
-    max-width: 100vw; max-height: 85vh; /* Increased to 85% for mobile */
+    max-width: 90vw; max-height: 90vh; /* 🆕 Increased to 90% */
     background: #000;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     touch-action: none;
 }
 
 .towerBtn {
-    width: 64px; height: 64px; /* Larger touch targets */
-    margin: 3px; /* Tighter margins */
+    width: 72px; height: 72px; /* 🆕 Larger for mobile */
+    margin: 2px;
     border-radius: 12px;
     border: none;
     font-weight: 600;
+    font-size: 12px; /* 🆕 Smaller text */
     cursor: pointer; 
     transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -41,17 +42,17 @@ body {
 .poison { background: linear-gradient(145deg, #9c27b0, #7b1fa2); color: white; }
 .aoe { background: linear-gradient(145deg, #e91e63, #c2185b); color: white; }
 .sniper { background: linear-gradient(145deg, #212121, #424242); color: white; }
-.laser { background: linear-gradient(145deg, #00bcd4, #0097a7); color: white; } /* New Laser tower style */
+.laser { background: linear-gradient(145deg, #00bcd4, #0097a7); color: white; }
 
 .towerBtn small { 
-    font-size: 9px; margin-top: 1px; font-weight: 400; opacity: 0.9; /* Slightly larger text */
+    font-size: 8px; margin-top: 2px; font-weight: 400; opacity: 0.9; /* 🆕 Smaller text */
 }
 
 .towerBtn:active, .towerBtn.selected { transform: scale(0.95); box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
 
 .mapBtn {
-    width: 80px; height: 80px; /* Smaller for mobile */
-    background: white; border-radius: 12px; margin: 5px; 
+    width: 80px; height: 80px;
+    background: white; border-radius: 12px; margin: 4px; 
     font-size: 10px; font-weight: 600; color: #333;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
@@ -59,8 +60,8 @@ body {
 
 button { 
     background: #007aff; color: white; border: none; border-radius: 10px;
-    padding: 10px 20px; font-size: 15px; font-weight: 600; /* Smaller buttons */
-    margin: 5px; min-width: 100px; /* More compact */
+    padding: 10px 20px; font-size: 14px; font-weight: 600; /* 🆕 Smaller font */
+    margin: 4px; min-width: 90px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 button:active { transform: scale(0.98); }
@@ -68,42 +69,47 @@ button:disabled { background: #c7c7cc; color: #86868b; }
 
 #towerSelector { 
     display: flex; flex-wrap: wrap; justify-content: center; 
-    gap: 2px; /* Tighter gap */
-    margin: 6px 0; /* Tighter margin */
+    gap: 2px; margin: 4px 0; /* 🆕 Tighter margins */
 }
-#mapSelector { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 10px 0; }
+
+#mapSelector { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin: 8px 0; }
 
 #upgradePanel {
-    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); /* 🆕 Bottom-aligned */
     background: white; border-radius: 16px;
-    min-width: 260px; max-width: 90vw; padding: 0;
+    min-width: 260px; max-width: 90vw; min-height: 300px; padding: 0;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     z-index: 1000; display: none;
-    overflow: hidden;
 }
-#upgradePanel > div { padding: 15px; }
+#upgradePanel > div { padding: 12px; }
 .upgradeBtn { 
-    width: 100%; margin: 5px 0; padding: 12px; 
+    width: 100%; margin: 4px 0; padding: 10px; 
     background: #007aff; border-radius: 10px; 
-    font-size: 15px; font-weight: 600; color: white;
+    font-size: 14px; font-weight: 600; color: white;
 }
+.upgrade4 { background: linear-gradient(145deg, #ffd700, #ffa500); color: #1d1d1f; } /* OP upgrade style */
 
-#gameOverScreen h1 { font-size: 32px; color: #1d1d1f; margin-bottom: 10px; }
-#gameOverScreen p { font-size: 18px; color: #1d1d1f; margin-bottom: 20px; }
-#gameOverScreen button { padding: 12px 24px; font-size: 16px; }
+#gameOverScreen h1 { font-size: 28px; color: #1d1d1f; margin-bottom: 8px; } /* 🆕 Smaller font */
+#gameOverScreen p { font-size: 16px; color: #1d1d1f; margin-bottom: 16px; }
+#gameOverScreen button { padding: 10px 20px; font-size: 14px; }
 
-#tutorial > div { background: white; border-radius: 16px; padding: 20px; max-width: 90vw; }
-#tutorialText { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #1d1d1f; }
-#nextStep { padding: 12px 24px; font-size: 15px; font-weight: 600; }
+#tutorial { 
+    background: rgba(0,0,0,0.5); /* 🆕 Dim background */
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    display: none; justify-content: center; align-items: center;
+}
+#tutorial > div { background: white; border-radius: 16px; padding: 16px; max-width: 90vw; }
+#tutorialText { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #1d1d1f; }
+#nextStep { padding: 10px 20px; font-size: 14px; font-weight: 600; }
 
-#backToStart { padding: 8px 14px; font-size: 13px; background: rgba(0,0,0,0.05); border-radius: 10px; color: #007aff; }
+#backToStart { padding: 8px 12px; font-size: 12px; background: rgba(0,0,0,0.05); border-radius: 10px; color: #007aff; }
 
 @media (max-width: 480px) {
-    .towerBtn { width: 64px; height: 64px; } /* Consistent touch target */
-    .towerBtn small { font-size: 9px; }
-    button { padding: 12px 24px; font-size: 16px; }
-    #gameCanvas { max-height: 85vh; } /* Maximized canvas */
-    #towerSelector { gap: 2px; margin: 6px 0; }
-    #upgradePanel { min-width: 240px; }
-    #tutorialText { font-size: 14px; }
+    .towerBtn { width: 72px; height: 72px; font-size: 11px; }
+    .towerBtn small { font-size: 7px; }
+    button { padding: 8px 16px; font-size: 13px; }
+    #gameCanvas { max-width: 90vw; max-height: 90vh; } /* 🆕 Consistent scaling */
+    #towerSelector { gap: 2px; margin: 4px 0; }
+    #upgradePanel { min-width: 240px; bottom: 8px; }
+    #tutorialText { font-size: 13px; }
 }

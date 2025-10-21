@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Tower Defence</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -42,28 +42,28 @@
     <div id="gameUI" style="display:none;">
         <canvas id="gameCanvas"></canvas>
         
-        <!-- TOWER SELECTOR WITH LASER TOWER -->
+        <!-- TOWER SELECTOR WITH UPDATED DESCRIPTIONS -->
         <div id="towerSelector">
             <button class="towerBtn basic selected" data-type="basic">
-                Basic<br>$50<br><small>25dmg</small>
+                Basic<br>$50<br><small>25→150dmg</small>
             </button>
             <button class="towerBtn fast" data-type="fast">
-                Fast<br>$40<br><small>Freeze + 10dmg</small>
+                Fast<br>$40<br><small>Freeze 10→60dmg</small>
             </button>
             <button class="towerBtn snare" data-type="snare">
-                Snare<br>$60<br><small>Slow + 20dmg</small>
+                Snare<br>$60<br><small>Slow 20→130dmg</small>
             </button>
             <button class="towerBtn poison" data-type="poison">
-                Poison<br>$70<br><small>Melt 5s + 15dmg</small>
+                Poison<br>$70<br><small>Melt 15→100dmg</small>
             </button>
             <button class="towerBtn aoe" data-type="aoe">
-                AoE<br>$80<br><small>Chain 3 + 40dmg</small>
+                AoE<br>$80<br><small>Chain 40→200dmg</small>
             </button>
             <button class="towerBtn sniper" data-type="sniper">
-                Sniper<br>$90<br><small>Crit x2 + 80dmg</small>
+                Sniper<br>$90<br><small>Crit 80→450dmg</small>
             </button>
             <button class="towerBtn laser" data-type="laser">
-                Laser<br>$100<br><small>Pierce 5 + 30dmg</small>
+                Laser<br>$100<br><small>Beam 30→180dmg</small>
             </button>
         </div>
         
